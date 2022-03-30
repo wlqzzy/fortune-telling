@@ -1,0 +1,22 @@
+{
+    "name": "wlqacym/fortune-telling",
+    "description": "BaZi And WuXing",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "wlqacym",
+            "email": "wlqacym@qq.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.2.0",
+        "ext-json": "*",
+        "ext-curl": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "FortuneTelling\\" : "src/"
+        }
+    }
+}
