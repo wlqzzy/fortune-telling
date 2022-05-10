@@ -1,6 +1,11 @@
 <?php
 
 //require_once dirname(__DIR__) . '/vendor/autoload.php';
-$sky = ['庚', '辛', '壬', '癸', '甲', '乙', '丙', '丁', '戊', '己'];
-$year = '2010';echo 1;
-echo $year{0};die();
+
+use FortuneTelling\facade\Lunar;
+
+$year = 2023;
+$month = 4;
+$day = 1;
+$lunarDate = Lunar::convertSolarToLunar($year, $month, $day);
+print_r($lunarDate);
