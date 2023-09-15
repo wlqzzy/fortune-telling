@@ -3,7 +3,9 @@
 namespace FortuneTelling\facade\core\bz;
 
 /**
- * @method string lunarTransformGregorian(string $birthday, bool $isLeapMonth = false) static 农历转公历
+ * @method static string lunarTransformGregorian(string $birthday, bool $isLeapMonth = false)   农历转公历
+ * @method static array gregorianTransformLunar(string $date)   公历转农历出生日期
+ * @method static array birthBz(string $realDate, array $jieQi, int $is23 = 1) 计算八字
  */
 class BaZi
 {

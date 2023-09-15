@@ -3,15 +3,13 @@
 namespace FortuneTelling\core\bz;
 
 use FortuneTelling\data\BaZiDb;
-use FortuneTelling\facade\Lunar;
+use FortuneTelling\helper\Lunar;
 
 /**
  * 八字五行计算
  */
 class BaZi
 {
-    protected $use_new = false;
-    protected $is23H = true;
 
     /**
      * 农历转公历
@@ -48,11 +46,11 @@ class BaZi
 
 
     /**
-     * 农历出生日期
+     * 公历转农历出生日期
      * @param string $date 真实出生时间
      * @return array
      * */
-    public function gregorianTransformLunar(string $date)
+    public function gregorianTransformLunar(string $date): array
     {
         //取出出生时间的年、月、日
         $dateArr = explode(' ', $date);
@@ -68,22 +66,126 @@ class BaZi
         $lunarMonth = $lunarDate[1];
         //闰月判断处理
         if ($lunarDate[7]) {
-            $lunar['is_ry'] = ($lunarDate[7] == $lunarMonth) ? 1 : 0;//判断闰月
             //闰月及之后的月份数字-1
-            $td_month_no = ($lunarDate[4] + 0) > $lunarDate[7] ? ($lunarDate[4] - 1) : $lunarDate[4];
+            $tdMonthNo = ($lunarDate[4] + 0) > $lunarDate[7] ? ($lunarDate[4] - 1) : $lunarDate[4];
         } else {
-            $td_month_no = $lunarDate[4];
+            $tdMonthNo = $lunarDate[4];
         }
-        $td_day = $lunarDate[2];
-        $td_day_no = $lunarDate[5];
+        $tdDay = $lunarDate[2];
+        $tdDayNo = $lunarDate[5];
         //出生时辰转化时支
         $time = explode(' ', $date);
         $h = explode(':', $time[1]);
         return [
-            'lunarBirthdayStr' => $lunarDate[3] . '年 ' . $lunarMonth . ' ' . $td_day . ' ' . BaZiDb::$earth[ceil($h[0] / 2)] . '时',
-            'lunarBirthdayNo' => $lunarDate[0] . '-' . ($td_month_no > 9 ? '' : '0') . $td_month_no . '-' . ($td_day_no > 9 ? '' : '0') . $td_day_no . ' ' . $h[1],
-            'isLeapMonth' => mb_strstr($lunarMonth, '闰', 'utf-8') !== false
+            //农历生日字符串
+            'lunarBirthdayStr' => $lunarDate[3] . '年 '
+                                  . $lunarMonth . ' '
+                                  . $tdDay . ' '
+                                  . BaZiDb::EARTH[ceil($h[0] / 2)] . '时',
+            //农历日期Y-m-d格式
+            'lunarBirthdayNo' => $lunarDate[0]
+                                 . '-' . ($tdMonthNo > 9 ? '' : '0') . $tdMonthNo
+                                 . '-' . ($tdDayNo > 9 ? '' : '0') . $tdDayNo
+                                 . ' ' . $h[1],
+            //是否闰月
+            'isLeapMonth' => ($lunarDate[7] && ($lunarDate[7] + 1 == $lunarDate[4])) ? 1 : 0
         ];
     }
-    private function
+
+    /**
+     * 计算八字
+     *
+     * @param string $realDate
+     * @param array $jieQi
+     * @param int $is23
+     * @return array
+     *
+     * @author wlq
+     * @since 1.0 2023-09-15
+     */
+    public function birthBz(string $realDate, array $jieQi, int $is23 = 1): array
+    {
+        $realDateTime = strtotime($realDate);
+        //取出前节气数据的年
+        $year = $jieQi['year'];
+        //年天干
+        $yearTgNum = ($year - 4) % 10;
+        //年地支
+        $yearDzNum = ($year - 4) % 12;
+        /**计算月干支**/
+        //月地支
+        $monthDzNum = $jieQi['dzNum'];
+        //月干：月干下标=（(月支下标+10)%12+（年干下标+1）*2）%10
+        $monthTgNum = (($jieQi['dzNum'] + 10) % 12 + ($yearTgNum + 1) * 2) % 10;
+        /*计算日天干地支*/
+        //日天干求解参数
+        //获取年
+        $year = date('Y', $realDateTime);
+        //年前两位数字
+        $year12 = floor($year / 100);
+        //年后两位数字
+        $year34 = $year % 100;
+        $realMonth = date('n', $realDateTime);
+        //1月、2月特殊处理
+        if ($realMonth == 1 || $realMonth == 2) {
+            $realMonth = $realMonth + 12;
+            $year34 -= 1;
+        }
+        $realDay = date('j', $realDateTime);
+        //23时之后为第二天时参数+1
+        $hour23h = $is23 && date('G', $realDateTime) == 23 ? 1 : 0;
+        //日天干求解参数
+        $g = 4 * $year12
+             + floor($year12 / 4)
+             + 5 * $year34
+             + floor($year34 / 4)
+             + floor(3 * ($realMonth + 1) / 5)
+             + $realDay
+             - 3
+             + $hour23h;
+        //日地支求解参数
+        $z = 8 * $year12
+             + floor($year12 / 4)
+             + 5 * $year34
+             + floor($year34 / 4)
+             + floor(3 * ($realMonth + 1) / 5)
+             + $realDay
+             + 7
+             + ($realMonth % 2 ? 0 : 6)
+             + $hour23h;
+        /**获取日干支**/
+        //日干
+        $dayTgNum = ($g - 1) % 10;
+        //日支
+        $dayDzNum = ($z - 1) % 12;
+        /**获取时干支**/
+        //获取时干支查询列表
+        $hour = date('G', $realDateTime);
+        //时地支
+        $hourDzNum = floor(($hour + 1) % 24 / 2);
+        //时天干
+        $hourTgNum = ($hourDzNum + $dayTgNum * 2) % 10;
+        //获取出生时干支数据
+        $hourName = ['夜半', '鸡鸣', '平旦', '日出', '食时', '隅中', '日中', '日跌', '晡食', '日入', '黄昏', '人定'];
+        $data = [
+            'year' => [
+                'tg' => $yearTgNum,
+                'dz' => $yearDzNum
+            ],
+            'month' => [
+                'tg' => $monthTgNum,
+                'dz' => $monthDzNum
+            ],
+            'day' => [
+                'tg' => $dayTgNum,
+                'dz' => $dayDzNum
+            ],
+            'hour' => [
+                'tg' => $hourTgNum,
+                'dz' => $hourDzNum
+            ],
+            'hourVulgo' => $hourName[$hourDzNum]
+        ];
+        return ['name' => '生辰八字', 'value' => $data];
+    }
 }
