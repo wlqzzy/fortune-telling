@@ -3,8 +3,20 @@
 namespace FortuneTelling\model\userAttr;
 
 use FortuneTelling\facade\core\bz\BaZi;
+use FortuneTelling\facade\core\bz\ZiWei;
 use FortuneTelling\helper\Lunar;
 
+/**
+ * Trait BaZiAttr
+ * @package FortuneTelling\model\userAttr
+ * @property  string $gregorianBirthday
+ * @property  string $lunarBirthday
+ * @property  string $lunarBirthdayStr
+ * @property  bool $isLeapMonth
+ * @property  array $adjacentJieQi
+ * @property  array $baZi
+ * @property  array $mp
+ */
 trait BaZiAttr
 {
     protected $data;
@@ -19,14 +31,10 @@ trait BaZiAttr
      */
     private function getGregorianBirthday(): string
     {
-        if (!empty($this->data['gregorianBirthday'])) {
-            return $this->data['gregorianBirthday'];
-        }
-        if (!empty($this->data['lunarBirthday'])) {
+        if (empty($this->data['gregorianBirthday']) && !empty($this->data['lunarBirthday'])) {
             $this->data['gregorianBirthday'] = BaZi::lunarTransformGregorian($this->data['lunarBirthday']);
-            return $this->data['gregorianBirthday'];
         }
-        return '';
+        return $this->data['gregorianBirthday'];
     }
 
     /**
@@ -39,14 +47,11 @@ trait BaZiAttr
      */
     private function getLunarBirthday(): string
     {
-        if (!empty($this->data['lunarBirthday'])) {
-            return $this->data['lunarBirthday'];
-        }
-        if (!empty($this->data['gregorianBirthday'])) {
+        if (empty($this->data['lunarBirthday']) && !empty($this->data['gregorianBirthday'])) {
             $this->initLunar();
             return $this->data['lunarBirthday'];
         }
-        return '';
+        return $this->data['lunarBirthday'];
     }
 
     /**
@@ -59,14 +64,10 @@ trait BaZiAttr
      */
     private function getLunarBirthdayStr(): string
     {
-        if (!empty($this->data['lunarBirthdayStr'])) {
-            return $this->data['lunarBirthdayStr'];
-        }
-        if (!empty($this->data['gregorianBirthday'])) {
+        if (empty($this->data['lunarBirthdayStr']) && !empty($this->data['gregorianBirthday'])) {
             $this->initLunar();
-            return $this->data['lunarBirthdayStr'];
         }
-        return '';
+        return $this->data['lunarBirthdayStr'];
     }
 
     /**
@@ -79,14 +80,10 @@ trait BaZiAttr
      */
     private function getIsLeapMonth(): bool
     {
-        if (!empty($this->data['isLeapMonth'])) {
-            return $this->data['isLeapMonth'];
-        }
-        if (!empty($this->data['gregorianBirthday'])) {
+        if (empty($this->data['lunarBirthday']) && !empty($this->data['gregorianBirthday'])) {
             $this->initLunar();
-            return $this->data['isLeapMonth'];
         }
-        return false;
+        return $this->data['isLeapMonth'];
     }
 
     /**
@@ -113,13 +110,11 @@ trait BaZiAttr
      */
     private function getAdjacentJieQi(): array
     {
-        if (!empty($this->data['adjacentJieQi'])) {
+        if (empty($this->data['adjacentJieQi']) && !empty($this->data['gregorianBirthday'])) {
+            $this->data['adjacentJieQi'] = Lunar::getAdjacentJieQi($this->data['gregorianBirthday']);
             return $this->data['adjacentJieQi'];
         }
-        if (!empty($this->data['gregorianBirthday'])) {
-            return Lunar::getAdjacentJieQi($this->data['gregorianBirthday']);
-        }
-        return [];
+        return $this->data['adjacentJieQi'] ?? [];
     }
 
     /**
@@ -132,9 +127,115 @@ trait BaZiAttr
      */
     private function getBaZi(): array
     {
-        if (empty($this->data['gregorianBirthday']) && empty($this->data['adjacentJieQi'])) {
-            return [];
+        if (empty($this->data['baZi'])) {
+            if (empty($this->data['gregorianBirthday']) && empty($this->data['adjacentJieQi'])) {
+                $this->data['baZi'] = BaZi::birthBz($this->gregorianBirthday, $this->adjacentJieQi, $this->is23h);
+                return $this->data['baZi'];
+            }
         }
-        return BaZi::birthBz($this->data['gregorianBirthday'], $this->data['adjacentJieQi'], $this->is23h);
+        return $this->data['baZi'] ?? [];
+;
+    }
+
+    /**
+     * 获取命盘信息
+     *
+     * @return array
+     *
+     * @author wlq
+     * @since 1.0 2023-09-18
+     */
+    private function getMp(): array
+    {
+        if (empty($this->data['mp'])) {
+            if ($this->mpInit()) {
+                $this->data['mp'] = ZiWei::getMp();
+            }
+        }
+        return $this->data['mp'] ?? [];
+    }
+
+    /**
+     * 获取命盘命宫信息
+     *
+     * @return array
+     *
+     * @author wlq
+     * @since 1.0 2023-09-18
+     */
+    private function getMpMg(): array
+    {
+        if (empty($this->data['mpMg'])) {
+            if ($this->mpInit()) {
+                $this->data['mpMg'] = ZiWei::getMpMg();
+            }
+        }
+        return $this->data['mpMg'] ?? [];
+    }
+
+    /**
+     * 获取命盘身宫信息
+     *
+     * @return array
+     *
+     * @author wlq
+     * @since 1.0 2023-09-18
+     */
+    private function getMpSg(): array
+    {
+        if (empty($this->data['mpSg'])) {
+            if ($this->mpInit()) {
+                $this->data['mpSg'] = ZiWei::getMpSg();
+            }
+        }
+        return $this->data['mpSg'] ?? [];
+    }
+
+    /**
+     * 获取命盘流年命宫信息
+     *
+     * @return array
+     *
+     * @author wlq
+     * @since 1.0 2023-09-18
+     */
+    private function getMpLnMg(): array
+    {
+        if (empty($this->data['mpLnMg'])) {
+            if ($this->mpInit()) {
+                $this->data['mpLnMg'] = ZiWei::getMpLnMgm();
+            }
+        }
+        return $this->data['mpLnMg'] ?? [];
+    }
+
+    /**
+     * 命盘初始化
+     *
+     * @author wlq
+     * @since 1.0 2023-09-18
+     */
+    private function mpInit(): bool
+    {
+        if (ZiWei::checkInit()) {
+            return true;
+        }
+        if (
+            !empty($this->data['gregorianBirthday'])
+            && !empty($this->data['adjacentJieQi'])
+            && !empty($this->data['lunarBirthday'])
+        ) {
+            $time = strtotime($this->data['lunarBirthday']);
+            $this->data['mp'] = ZiWei::init(
+                $this->data['baZi']['hour']['dz']['value'],
+                $this->data['sex'],
+                date('Y', $time),
+                date('n', $time),
+                date('j', $time),
+                $this->data['isLeapMonth'] ? 1 : 0
+            );
+            return true;
+        }
+        return false;
     }
 }

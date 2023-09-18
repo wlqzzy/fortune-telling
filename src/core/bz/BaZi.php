@@ -81,7 +81,7 @@ class BaZi
             'lunarBirthdayStr' => $lunarDate[3] . '年 '
                                   . $lunarMonth . ' '
                                   . $tdDay . ' '
-                                  . BaZiDb::EARTH[ceil($h[0] / 2)] . '时',
+                                  . BaZiDb::DZ_ARR[ceil($h[0] / 2)] . '时',
             //农历日期Y-m-d格式
             'lunarBirthdayNo' => $lunarDate[0]
                                  . '-' . ($tdMonthNo > 9 ? '' : '0') . $tdMonthNo
@@ -186,6 +186,6 @@ class BaZi
             ],
             'hourVulgo' => $hourName[$hourDzNum]
         ];
-        return ['name' => '生辰八字', 'value' => $data];
+        return $data;
     }
 }
