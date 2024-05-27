@@ -47,7 +47,7 @@ class UserModel
         return $this->data[$name] = $value;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return $this->data;
     }
