@@ -2,7 +2,7 @@
 
 namespace FortuneTelling\helper;
 
-use FortuneTelling\data\UserModel;
+use FortuneTelling\model\UserModel;
 
 class User
 {

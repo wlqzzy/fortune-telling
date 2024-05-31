@@ -1,12 +1,14 @@
 <?php
 
-namespace FortuneTelling\data;
+namespace FortuneTelling\model;
 
 use FortuneTelling\model\userAttr\BaZiAttr;
+use FortuneTelling\model\userAttr\ZiWeiAttr;
 
 class UserModel
 {
     use BaZiAttr;
+    use ZiWeiAttr;
 
     protected $data = [
         'gregorianBirthday' => '',//出生日期-阳历

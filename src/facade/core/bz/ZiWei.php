@@ -15,12 +15,17 @@ namespace FortuneTelling\facade\core\bz;
  */
 class ZiWei
 {
-    protected static $bz;
+    protected static $zw;
     public static function __callStatic($method, $args)
     {
-        if (!self::$bz) {
-            self::$bz = new \FortuneTelling\core\bz\ZiWei();
+        return call_user_func_array([self::getZw(), $method], $args);
+    }
+
+    public static function getZw()
+    {
+        if (!self::$zw) {
+            self::$zw = new \FortuneTelling\core\bz\ZiWei();
         }
-        return call_user_func_array([self::$bz, $method], $args);
+        return self::$zw;
     }
 }

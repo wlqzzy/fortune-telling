@@ -74,6 +74,7 @@ class ZiWei
         if ($this->isLeapMonth) {
             $this->lunarBirthMonth += 1;
         }
+        $this->makeMp();
         return $this;
     }
 
@@ -114,7 +115,7 @@ class ZiWei
      * @author wlq
      * @since 1.0 2023-09-18
      */
-    public function getMpBase(): array
+    private function getMpBase(): array
     {
         /**
          * 第一步：定宫干
@@ -201,7 +202,7 @@ class ZiWei
      * @author wlq
      * @since 1.0 2023-09-18
      */
-    public function getWj(): array
+    private function getWj(): array
     {
         if (!property_exists($this, 'wj')) {
             $tg_num = floor($this->mp[$this->getMgNum()]['tg']['value'] / 2);
@@ -540,7 +541,7 @@ class ZiWei
      * @author wlq
      * @since 1.0 2023-09-18
      */
-    public function getMp(): array
+    private function makeMp(): array
     {
         /**
          * 第一步：定宫干
@@ -587,6 +588,18 @@ class ZiWei
         return ['tgNum' => $tgNum,'dzNum' => $dzNum];
     }
 
+    /**
+     * 获取命盘
+     *
+     * @return mixed
+     *
+     * @author wlq
+     * @since 1.0 2024-05-31
+     */
+    public function getMp()
+    {
+        return $this->mp;
+    }
     /**
      * 获取命宫信息
      *

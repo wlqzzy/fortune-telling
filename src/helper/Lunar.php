@@ -91,7 +91,6 @@ class Lunar
                     true
                 );
             $d = self::getCapitalNum($e, false);
-            array_push($lunarArray, $year, $m, self::getCapitalNum($e, false));
         }
         array_push(
             $lunarArray,
@@ -408,7 +407,7 @@ class Lunar
     {
         $dateInt = strtotime($date);
         $year = date('Y', $dateInt);
-        $jieQiIndex = date('n', $dateInt) - 1;
+        $jieQiIndex = date('m', $dateInt) - 1;
         while (true) {
             $jieQiDetail = self::getJieQiDay($year, $jieQiIndex);
             /**
@@ -494,9 +493,9 @@ class Lunar
         $diffYear = $jieQi['month'] < 3 ? -1 : 0;
         $y = $year % 100;
         $c = $jieQi['c'][ceil($year / 100)];
-        $day = ($y * 2.2422 + $c) - ceil(($y + $diffYear) / 4) + $jieQi['diff'][$year] ?? 0;
+        $day = ceil($y * 0.2422 + $c) - ceil(($y + $diffYear) / 4) + ($jieQi['diff'][$year] ?? 0);
         $jieQi['year'] = $year;
-        $jieQi['day'] = $day;
+        $jieQi['day'] = (int)$day;
         $jieQi['dateInt'] = strtotime($year . '-' . $jieQi['month'] . '-' . $day);
         $jieQi['dateStr'] = date('Y-m-d', $jieQi['dateInt']);
         return $jieQi;

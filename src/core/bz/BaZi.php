@@ -40,7 +40,7 @@ class BaZi
         $aa = Lunar::convertLunarToSolar($year, $month, $day); //农历转公历
         return date(
             'Y-m-d H:i:01',
-            strtotime($aa[0] . '-' . $aa[1] . '-' . $aa[2] . ' ' . $dateArr[1])
+            strtotime($aa[0] . '-' . $aa[1] . '-' . $aa[2] . ' ' . ($dateArr[1] ?? '00:00:01'))
         );
     }
 
@@ -75,7 +75,7 @@ class BaZi
         $tdDayNo = $lunarDate[5];
         //出生时辰转化时支
         $time = explode(' ', $date);
-        $h = explode(':', $time[1]);
+        $h = explode(':', $time[1] ?? '00:00:01');
         return [
             //农历生日字符串
             'lunarBirthdayStr' => $lunarDate[3] . '年 '
@@ -107,16 +107,16 @@ class BaZi
     {
         $realDateTime = strtotime($realDate);
         //取出前节气数据的年
-        $year = $jieQi['year'];
+        $year = $jieQi['prev']['year'];
         //年天干
         $yearTgNum = ($year - 4) % 10;
         //年地支
         $yearDzNum = ($year - 4) % 12;
         /**计算月干支**/
         //月地支
-        $monthDzNum = $jieQi['dzNum'];
+        $monthDzNum = $jieQi['prev']['dzNum'];
         //月干：月干下标=（(月支下标+10)%12+（年干下标+1）*2）%10
-        $monthTgNum = (($jieQi['dzNum'] + 10) % 12 + ($yearTgNum + 1) * 2) % 10;
+        $monthTgNum = (($jieQi['prev']['dzNum'] + 10) % 12 + ($yearTgNum + 1) * 2) % 10;
         /*计算日天干地支*/
         //日天干求解参数
         //获取年
@@ -170,19 +170,27 @@ class BaZi
         $data = [
             'year' => [
                 'tg' => $yearTgNum,
-                'dz' => $yearDzNum
+                'tgText' => BaZiDb::TG_ARR[$yearTgNum],
+                'dz' => $yearDzNum,
+                'dzText' => BaZiDb::DZ_ARR[$yearDzNum],
             ],
             'month' => [
                 'tg' => $monthTgNum,
-                'dz' => $monthDzNum
+                'tgText' => BaZiDb::TG_ARR[$monthTgNum],
+                'dz' => $monthDzNum,
+                'dzText' => BaZiDb::DZ_ARR[$monthDzNum],
             ],
             'day' => [
                 'tg' => $dayTgNum,
-                'dz' => $dayDzNum
+                'tgText' => BaZiDb::TG_ARR[$dayTgNum],
+                'dz' => $dayDzNum,
+                'dzText' => BaZiDb::DZ_ARR[$dayDzNum],
             ],
             'hour' => [
                 'tg' => $hourTgNum,
-                'dz' => $hourDzNum
+                'tgText' => BaZiDb::TG_ARR[$hourTgNum],
+                'dz' => $hourDzNum,
+                'dzText' => BaZiDb::DZ_ARR[$hourDzNum],
             ],
             'hourVulgo' => $hourName[$hourDzNum]
         ];
