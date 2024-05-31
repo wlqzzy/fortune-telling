@@ -91,6 +91,7 @@ class ZiWei
     {
         $this->sex = $liuNianLunarYear;
         $this->liuNianYearGz = $liuNianLunarYear ? $this->getYearGzNum($liuNianLunarYear) : [];
+        $this->makeMp();
         return $this;
     }
 
