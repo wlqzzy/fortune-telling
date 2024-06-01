@@ -183,6 +183,7 @@ class BaZi
             $val['dzWxText'] = BaZiDb::WX_ARR[$val['dzWx']];
             $val['nyWx'] = BaZiDb::GZ_NY_WX[(($val['tg'] + 10 - $val['dz'] % 10) % 10 / 2) * 12 + $val['tg']];
         }
+        //时辰俗称
         $data['hourVulgo'] = $hourName[$hourDzNum];
         return $data;
     }
