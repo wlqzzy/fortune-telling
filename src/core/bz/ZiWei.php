@@ -270,19 +270,23 @@ class ZiWei
     private function setGongZhi(int $i, int $mgNumDy = -1)
     {
         //本命宫职
-        $this->mp[($this->getMgNum() - $i + 12) % 12]['gz'] = [
-            'name' => '宫职',
-            'value' => [
-                'bm' => ZiWeiDb::GONG_ZHI[$i]
-            ]
+        $this->mp[($this->getMgNum() - $i + 12) % 12]['gz']['bm'] = [
+            'name' => '本命宫职',
+            'value' => ZiWeiDb::GONG_ZHI[$i]
         ];
         //流年宫职
         if ($this->getLnMgNum() > -1) {
-            $this->mp[($this->getLnMgNum() - $i + 12) % 12]['gz']['value']['ln'] = ZiWeiDb::GONG_ZHI[$i];
+            $this->mp[($this->getLnMgNum() - $i + 12) % 12]['gz']['ln'] = [
+                'name' => '流年宫职',
+                'value' => ZiWeiDb::GONG_ZHI[$i]
+            ];
         }
         //大运宫职
         if ($mgNumDy > -1) {
-            $this->mp[($mgNumDy - $i + 12) % 12]['gz']['value']['dy'] = ZiWeiDb::GONG_ZHI[$i];
+            $this->mp[($mgNumDy - $i + 12) % 12]['gz']['dy'] = [
+                'name' => '大运宫职',
+                'value' => ZiWeiDb::GONG_ZHI[$i]
+            ];
         }
     }
 
@@ -307,31 +311,37 @@ class ZiWei
         //(2)紫微星
         $this->mp[$zwMpi % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_ZI_WEI,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_ZI_WEI],
             'hyx' => ''
         ];
         //(3)天机
         $this->mp[($zwMpi - 1) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_JI,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_JI],
             'hyx' => ''
         ];
         //(4)太阳
         $this->mp[($zwMpi - 3) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TAI_YANG,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TAI_YANG],
             'hyx' => ''
         ];
         //(5)武曲
         $this->mp[($zwMpi  - 4) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_WU_QU,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_WU_QU],
             'hyx' => ''
         ];
         //(6)天同
         $this->mp[($zwMpi - 5) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_TONG,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_TONG],
             'hyx' => ''
         ];
         //(7)廉贞
         $this->mp[($zwMpi - 8) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_LIAN_ZHEN,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_LIAN_ZHEN],
             'hyx' => ''
         ];
         /**
@@ -341,41 +351,49 @@ class ZiWei
         $tfMpi = 40 - $zwMpi;
         $this->mp[$tfMpi % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_FU,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_FU],
             'hyx' => ''
         ];
         //(2)太阴
         $this->mp[($tfMpi + 1) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TAI_YIN,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TAI_YIN],
             'hyx' => ''
         ];
         //(3)贪狼
         $this->mp[($tfMpi + 2) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TAN_LANG,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TAN_LANG],
             'hyx' => ''
         ];
         //(4)巨门
         $this->mp[($tfMpi + 3) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_JU_MEN,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_JU_MEN],
             'hyx' => ''
         ];
         //(5)天相
         $this->mp[($tfMpi + 4) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_XIANG,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_XIANG],
             'hyx' => ''
         ];
         //(6)天梁
         $this->mp[($tfMpi + 5) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_LIANG,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_LIANG],
             'hyx' => ''
         ];
         //(7)七杀
         $this->mp[($tfMpi + 6) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_QI_SHA,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_QI_SHA],
             'hyx' => ''
         ];
         //(8)破军
         $this->mp[($tfMpi + 10) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_PO_JUN,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_PO_JUN],
             'hyx' => ''
         ];
         /**
@@ -410,12 +428,14 @@ class ZiWei
         foreach ($anXc_0_4 as $k => $v) {
             $this->mp[$v]['xc']['value'][] = [
                 'xc' => $anXc[$k],
+                'xcText' => ZiWeiDb::XING_CHEN[$anXc[$k]],
                 'hyx' => ''
             ];
         }
         foreach ($anXc_5_6 as $k => $v) {
             $this->mp[$v]['xc']['value'][] = [
                 'xc' => $anXc[$k + 5],
+                'xcText' => ZiWeiDb::XING_CHEN[$anXc[$k + 5]],
                 'hyx' => ''
             ];
         }
@@ -424,31 +444,32 @@ class ZiWei
          */
         //(1)左辅
         $this->mp[(BaZiDb::DZ_NUM['辰'] + ($this->lunarBirthMonth - 1) + 12) % 12]['xc']['value'][] = [
-
             'xc' => ZiWeiDb::INDEX_ZUO_FU,
-
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_ZUO_FU],
             'hyx' => ''
         ];
         //(2)右弼
         $this->mp[(BaZiDb::DZ_NUM['戌'] - ($this->lunarBirthMonth - 1) + 12) % 12]['xc']['value'][] = [
-
             'xc' => ZiWeiDb::INDEX_YOU_BI,
-
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_YOU_BI],
             'hyx' => ''
         ];
         //(3)天刑
         $this->mp[(BaZiDb::DZ_NUM['酉'] + ($this->lunarBirthMonth - 1) + 12) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_XING,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_XING],
             'hyx' => ''
         ];
         //(4)天姚
         $this->mp[(BaZiDb::DZ_NUM['丑'] + ($this->lunarBirthMonth - 1) + 12) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_YAO,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_YAO],
             'hyx' => ''
         ];
         //(5)天马
         $this->mp[(BaZiDb::DZ_NUM['申'] - (($this->lunarBirthMonth - 1) % 4) * 3 + 12) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_TIAN_MA,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TIAN_MA],
             'hyx' => ''
         ];
         /**
@@ -457,11 +478,13 @@ class ZiWei
         //(1)文昌
         $this->mp[(BaZiDb::DZ_NUM['戌'] - $this->hourDzNum + 12) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_WEN_CHANG,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_WEN_CHANG],
             'hyx' => ''
         ];
         //(2)文曲
         $this->mp[(BaZiDb::DZ_NUM['辰'] + $this->hourDzNum + 12) % 12]['xc']['value'][] = [
             'xc' => ZiWeiDb::INDEX_WEN_QU,
+            'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_WEN_QU],
             'hyx' => ''
         ];
         //(3)火、(4)铃
@@ -469,40 +492,48 @@ class ZiWei
             case 0:
                 $this->mp[(BaZiDb::DZ_NUM['寅'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_HUO,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_HUO],
                     'hyx' => ''
                 ];
                 $this->mp[(BaZiDb::DZ_NUM['戌'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_LING,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_LING],
                     'hyx' => ''
                 ];
                 break;
             case 1:
                 $this->mp[(BaZiDb::DZ_NUM['卯'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_HUO,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_HUO],
                     'hyx' => ''
                 ];
                 $this->mp[(BaZiDb::DZ_NUM['戌'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_LING,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_LING],
                     'hyx' => ''
                 ];
                 break;
             case 2:
                 $this->mp[(BaZiDb::DZ_NUM['丑'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_HUO,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_HUO],
                     'hyx' => ''
                 ];
                 $this->mp[(BaZiDb::DZ_NUM['卯'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_LING,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_LING],
                     'hyx' => ''
                 ];
                 break;
             case 3:
                 $this->mp[(BaZiDb::DZ_NUM['酉'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_HUO,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TAI_YANG],
                     'hyx' => ''
                 ];
                 $this->mp[(BaZiDb::DZ_NUM['戌'] + $this->hourDzNum) % 12]['xc']['value'][] = [
                     'xc' => ZiWeiDb::INDEX_LING,
+                    'xcText' => ZiWeiDb::XING_CHEN[ZiWeiDb::INDEX_TAI_YANG],
                     'hyx' => ''
                 ];
                 break;
@@ -558,11 +589,13 @@ class ZiWei
         $dySort = $tgYinYang * $sexYinYang;
         //获取命宫大运位置
         $mgNumDy = $this->getDyMgNum($dySort);
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 12; $i++) {
             /**
              * 第三步：定大运
              */
-            $this->setDy($i, $dySort);
+            if ($i < 10) {
+                $this->setDy($i, $dySort);
+            }
             //(2)定宫职
             $this->setGongZhi($i, $mgNumDy);
             /**

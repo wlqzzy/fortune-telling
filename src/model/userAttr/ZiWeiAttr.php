@@ -36,7 +36,7 @@ trait ZiWeiAttr
             return false;
         }
         $this->initLunar();
-        $time = strtotime($this->lunarBirthday);
+        $time = strtotime($this->lunarBirthday . ':00:01');
         $this->data['mp']->init(
             $this->baZi['hour']['dz'],
             $this->sex,
