@@ -168,32 +168,22 @@ class BaZi
         //获取出生时干支数据
         $hourName = ['夜半', '鸡鸣', '平旦', '日出', '食时', '隅中', '日中', '日跌', '晡食', '日入', '黄昏', '人定'];
         $data = [
-            'year' => [
-                'tg' => $yearTgNum,
-                'tgText' => BaZiDb::TG_ARR[$yearTgNum],
-                'dz' => $yearDzNum,
-                'dzText' => BaZiDb::DZ_ARR[$yearDzNum],
-            ],
-            'month' => [
-                'tg' => $monthTgNum,
-                'tgText' => BaZiDb::TG_ARR[$monthTgNum],
-                'dz' => $monthDzNum,
-                'dzText' => BaZiDb::DZ_ARR[$monthDzNum],
-            ],
-            'day' => [
-                'tg' => $dayTgNum,
-                'tgText' => BaZiDb::TG_ARR[$dayTgNum],
-                'dz' => $dayDzNum,
-                'dzText' => BaZiDb::DZ_ARR[$dayDzNum],
-            ],
-            'hour' => [
-                'tg' => $hourTgNum,
-                'tgText' => BaZiDb::TG_ARR[$hourTgNum],
-                'dz' => $hourDzNum,
-                'dzText' => BaZiDb::DZ_ARR[$hourDzNum],
-            ],
-            'hourVulgo' => $hourName[$hourDzNum]
+            'year' => ['tg' => $yearTgNum, 'dz' => $yearDzNum,],
+            'month' => ['tg' => $monthTgNum, 'dz' => $monthDzNum,],
+            'day' => ['tg' => $dayTgNum, 'dz' => $dayDzNum,],
+            'hour' => ['tg' => $hourTgNum, 'dz' => $hourDzNum,]
         ];
+        //干支五行
+        foreach ($data as &$val) {
+            $val['tgText'] = BaZiDb::TG_ARR[$val['tg']];
+            $val['dzText'] = BaZiDb::DZ_ARR[$val['dz']];
+            $val['tgWx'] = BaZiDb::TG_WX_NUM_ARR[$val['tg']];
+            $val['tgWxText'] = BaZiDb::WX_ARR[$val['tgWx']];
+            $val['dzWx'] = BaZiDb::TG_WX_NUM_ARR[$val['dz']];
+            $val['dzWxText'] = BaZiDb::WX_ARR[$val['dzWx']];
+            $val['nyWx'] = BaZiDb::GZ_NY_WX[(($val['tg'] + 10 - $val['dz'] % 10) % 10 / 2) * 12 + $val['tg']];
+        }
+        $data['hourVulgo'] = $hourName[$hourDzNum];
         return $data;
     }
 }
