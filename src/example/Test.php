@@ -1,13 +1,8 @@
 <?php
-
-//require_once dirname(__DIR__) . '/vendor/autoload.php';
-
-$data = [
-    'gregorianBirthday' => '',//出生日期-阳历
-    'realBirthday' => '',//出生日期-阳历(计算地域偏差)
-    'lunarBirthday' => '',//出生日期-阴历
-    'lunarBirthdayStr' => '',//出生日期-阴历
-    'isLeapMonth' => false,//是否为农历闰月，默认否
-    'sex' => 0,
-    'city' => '',
-];
+$user = \FortuneTelling\helper\User::init('1990-01-01 00:00:01');
+//获取八字
+$bz = $user->baZi;
+//紫微斗数命盘
+$bz = $user->mp;
+//获取八卦本挂
+$bg = $user->bg->setNums(1, 3)->ben();
