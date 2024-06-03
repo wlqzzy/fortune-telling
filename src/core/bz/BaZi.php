@@ -162,7 +162,7 @@ class BaZi
         //获取时干支查询列表
         $hour = date('G', $realDateTime);
         //时地支
-        $hourDzNum = floor(($hour + 1) % 24 / 2);
+        $hourDzNum = (int)floor(($hour + 1) % 24 / 2);
         //时天干
         $hourTgNum = ($hourDzNum + $dayTgNum * 2) % 10;
         //获取出生时干支数据
@@ -173,18 +173,58 @@ class BaZi
             'day' => ['tg' => $dayTgNum, 'dz' => $dayDzNum,],
             'hour' => ['tg' => $hourTgNum, 'dz' => $hourDzNum,]
         ];
+        $wxQd = [0,0,0,0,0];
         //干支五行
         foreach ($data as &$val) {
             $val['tgText'] = BaZiDb::TG_ARR[$val['tg']];
             $val['dzText'] = BaZiDb::DZ_ARR[$val['dz']];
             $val['tgWx'] = BaZiDb::TG_WX_NUM_ARR[$val['tg']];
             $val['tgWxText'] = BaZiDb::WX_ARR[$val['tgWx']];
-            $val['dzWx'] = BaZiDb::TG_WX_NUM_ARR[$val['dz']];
+            $val['dzWx'] = BaZiDb::DZ_WX_NUM_ARR[$val['dz']];
             $val['dzWxText'] = BaZiDb::WX_ARR[$val['dzWx']];
-            $val['nyWx'] = BaZiDb::GZ_NY_WX[(($val['tg'] + 10 - $val['dz'] % 10) % 10 / 2) * 12 + $val['tg']];
+            $val['nyWx'] = BaZiDb::GZ_NY_WX[((($val['tg'] + 10 - $val['dz'] % 10) % 10 / 2) * 12 + $val['dz']) / 2];
+            $val['tgQd'] = BaZiDb::TG_WX_QD[$monthDzNum][$val['tg']];
+            $val['dzZg'] = self::getDzQd($val['dz'], $monthDzNum);
+            $wxQd[$val['tgWx']] += $val['tgQd'];
+            foreach ($val['dzZg'] as $zg) {
+                $wxQd[$zg['zgWx']] += $zg['qd'];
+            }
         }
+        //五行强度
+        $data['wxQd'] = [
+            round($wxQd[0], 3),
+            round($wxQd[1], 3),
+            round($wxQd[2], 3),
+            round($wxQd[3], 3),
+            round($wxQd[4], 3),
+        ];
         //时辰俗称
         $data['hourVulgo'] = $hourName[$hourDzNum];
         return $data;
+    }
+
+    /**
+     * 获取地支臧干强度
+     *
+     * @param int $dz
+     * @param int $monthDz
+     * @return array
+     *
+     * @author wlq
+     * @since 1.0 2024-06-03
+     */
+    private static function getDzQd(int $dz, int $monthDz): array
+    {
+        $dzZg = [];
+        foreach (BaZiDb::ZG_WX_QD[$dz] as $zg => $v) {
+            $dzZg[] = [
+                'zg' => $zg,
+                'zgText' => BaZiDb::TG_ARR[$zg],
+                'zgWx' => BaZiDb::TG_WX_NUM_ARR[$zg],
+                'zgWxText' => BaZiDb::TG_ARR[BaZiDb::TG_WX_NUM_ARR[$zg]],
+                'qd' => $v[$monthDz]
+            ];
+        }
+        return $dzZg;
     }
 }
