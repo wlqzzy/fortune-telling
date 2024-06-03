@@ -100,9 +100,9 @@ class BaGua
         //互卦二进制卦数转十进制卦数
         $upper = bindec($binaryHS);
         $lower = bindec($binaryHX);
-        $data=[
-            'name'=>'互卦',
-            'value'=>[
+        return [
+            'name' => '互卦',
+            'value' => [
                 'guaName' => [//卦名
                               's' => BaGuaDb::NAME[$upper],//上卦
                               'x' => BaGuaDb::NAME[$lower],//下卦
@@ -117,7 +117,6 @@ class BaGua
                 ]
             ]
         ];
-        return $data;
     }
 
     /**
