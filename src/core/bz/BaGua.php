@@ -1,14 +1,6 @@
 <?php
-// +----------------------------------------------------------------------
-// | OneThink [ WE CAN DO IT JUST THINK IT ]
-// +----------------------------------------------------------------------
-// | Copyright (c) 2013 http://www.onethink.cn All rights reserved.
-// +----------------------------------------------------------------------
-// | Author: 麦当苗儿 <zuojiazi@vip.qq.com> <http://www.zjzit.cn>
-// +----------------------------------------------------------------------
 
 namespace FortuneTelling\core\bz;
-
 
 use FortuneTelling\data\BaGuaDb;
 
@@ -26,7 +18,7 @@ class BaGua
      * @author wlq
      * @since 1.0 2024-06-03
      */
-    public function setNums(int $num1, int $num2)
+    public function setNums(int $num1, int $num2): self
     {
         $this->num1 = $num1;
         $this->num2 = $num2;
@@ -138,7 +130,7 @@ class BaGua
         $binaryX = BaGuaDb::BINARY[$lower];//下卦
         $binary = $binaryX . $binaryS;
         //获取变爻位
-        $yaoD=($num+5)%6;
+        $yaoD = ($num + 5) % 6;
         //更改变爻位值
         $binaryD = (int)!substr($binary, $yaoD, 1);
         //生成变卦
